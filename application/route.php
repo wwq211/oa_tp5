@@ -10,42 +10,40 @@
 // +----------------------------------------------------------------------
 
 return [
-    '__pattern__'   =>[
-        'id'    => '\d+',
-    ],
-
-    '/'             => 'index',
-
-    '[login]'       => [
-        '__miss__'  => 'index/Login/index',
-        'check'     => 'index/Login/check',
-    ],
-
-    '[flow]'        => [
-        'apply/1'   => ['index/Leave/apply'],
-        'apply/2'   => ['index/Flow/apply'],
-        'apply/2'   => ['index/Flow/apply'],
-        '__miss__'  => 'index/Flow/index',
-    ],
-
-    '[leave]'       => [
-        'confirm'   => ['index/Leave/confirm'],
-        'submit'    => ['index/Leave/submit']
-    ],
-
-    '[menu]'        => [
-        'switcher'  => ['index/SysMenu/switcher'],
-        'create'    => ['index/SysMenu/create'],
-        'save'      => ['index/SysMenu/save'],
-        'edit/id/:id' => ['index/SysMenu/edit'],
-        'del'       => ['index/SysMenu/del'],
-        'destroy'       => ['index/SysMenu/destroy'],
-        '__miss__'  => ['index/SysMenu/index'],
-    ],
-    '[user]'        => [
-        'info'      => ['index/User/info'],
-        'save'      => ['index/User/save'],
-        '__miss__'  => ['index/User/index'],
-    ],
-
+    // '__pattern__'   =>[
+    //     'id'    => '\d+',
+    // ],
+    // '/'             => 'index',
+    // '[login]'       => [
+    //     '/'  		=> 'Login/index',
+    //     'check'     => 'Login/check'
+    // ],
+	//
+    // '[flow]'        => [
+	// 	'apply$'  	=> 'Flow/index',
+    //     'apply/1$'   => ['Leave/apply'],
+    //     'apply/2'   => ['Flow/apply'],
+    //     'apply/2'   => ['Flow/apply']
+	//
+    // ],
+	//
+    // '[leave]'       => [
+    //     'confirm'   => ['Leave/confirm'],
+    //     'submit'    => ['Leave/submit']
+    // ],
+	//
+    // '[menu]'        => [
+	// 	'/$'  		 => ['Menu/index'],
+    //     'switcher$'  => ['Menu/switcher'],
+    //     'create$'    => ['Menu/create'],
+    //     'save$'      => ['Menu/save'],
+    //     'edit/id/:id$' => ['Menu/edit'],
+    //     'del$'       => ['Menu/del'],
+    //     'destroy$'   => ['Menu/destroy']
+    // ],
+    // '[user]'        => [
+	// 	'/$'		=> 'User/index',
+    //     'info$'      => 'User/info',
+    //     'save$'      => 'User/save'
+    // ],
 ];

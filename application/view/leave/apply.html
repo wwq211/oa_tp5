@@ -1,0 +1,43 @@
+{extend name="flow/apply_base" /}
+{block name="ext_css"}
+{load href="/static/AdminLTE-2.3.6/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css"}
+{/block}
+{block name="apply_form"}
+	<div class="form-group">
+		<label class="control-label col-sm-2">标题</label>
+		<div class="col-sm-8">
+			<input type="text" name="title" class="form-control" value="{$data['title']}" placeholder="输入标题" readonly/>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-sm-2">请假时间*</label>
+		<div class="col-sm-3">
+			<input type="text" class="form-control pull-right date-picker" name="start_time" placeholder="请假开始时间" data-date-format="yyyy-mm-dd hh:ii" value="{$data['start_time']}" {notin name="mode" value="add,edit"}readonly{/notin}>
+		</div>
+		<div class="col-sm-3">
+			<input type="text" class="form-control pull-right date-picker" name="end_time" placeholder="请假结束时间" data-date-format="yyyy-mm-dd hh:ii" value="{$data['end_time']}" {notin name="mode" value="add,edit"}readonly{/notin}>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-sm-2">请假天数*</label>
+		<div class="col-sm-4">
+			<input class="form-control" type="text" name="leave_day" value="{$data['leave_day']}" onchange="update_confirm()" data-toggle="tooltip" data-placement="bottom" title="大于3.5小时为请假1天，小于3.5小时为请假0.5天" {notin name="mode" value="add,edit"}readonly{/notin} placeholder="请假天数(单位0.5天)">
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-sm-2">请假类型*</label>
+		<div class="col-sm-8">
+			<ul class="list-unstyled list-inline radio">
+				{foreach $config['param']['leave_type'] as $type => $name}
+					<li><label><input type="radio" name="leave_type" value="{$type}" {eq name="$type" value="$data['leave_type']"}checked="checked"{/eq}> <span>{$name}</span></label></li>
+				{/foreach}
+			</ul>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-sm-2">请假说明*</label>
+		<div class="col-sm-8">
+			<textarea class="form-control" name="describe" rows="5" {notin name="mode" value="add,edit"}readonly{/notin}>{$data['describe']}</textarea>
+		</div>
+	</div>
+{/block}

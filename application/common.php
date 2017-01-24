@@ -31,7 +31,7 @@ function list_to_tree($list, $root = 0, $pk = 'id', $pid = 'pid', $child = '_chi
             } else {
                 if (isset($refer[$parentId])) {
                     $parent = &$refer[$parentId];
-                    
+
                     $parent[$child][] = &$list[$key];
                 }
             }
@@ -53,9 +53,13 @@ function get_user_name($user_id = null)
     return $user_name;
 }
 
-function get_duty_id()
+function get_duty_id($user_id = null)
 {
-    $duty_id = session('user_auth.dept_id');
+	if ($user_id) {
+		$duty_id = db('user')->where(['id' => $user_id])->value('duty_id');
+	}else{
+		$duty_id = session('user_auth.duty_id');
+	}
     return isset($duty_id) ? $duty_id : 0;
 }
 
@@ -66,9 +70,13 @@ function get_duty_name($duty_id = null)
     return $duty_name;
 }
 
-function get_project_id()
+function get_project_id($user_id = null)
 {
-    $project_id = session('user_auth.project_id');
+	if ($user_id) {
+		$project_id = db('user')->where(['id' => $user_id])->value('project_id');
+	}else{
+		$project_id = session('user_auth.project_id');
+	}
     return isset($project_id) ? $project_id : 0;
 }
 
@@ -79,9 +87,13 @@ function get_project_name($project_id = null)
     return $project_name;
 }
 
-function get_position_id()
+function get_position_id($user_id = null)
 {
-    $position_id = session('user_auth.position_id');
+	if ($user_id) {
+		$position_id = db('user')->where(['id' => $user_id])->value('position_id');
+	}else{
+		$position_id = session('user_auth.position_id');
+	}
     return isset($position_id) ? $position_id : 0;
 }
 
@@ -90,4 +102,9 @@ function get_position_name($position_id = null)
     $position_id = $position_id ? $position_id : get_position_id();
     $position_name = db('position')->where(['id' => $position_id])->value('name');
     return $position_name;
+}
+
+function set_url($str)
+{
+	session('url', $str);
 }
