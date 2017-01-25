@@ -1,43 +1,215 @@
-{extend name="flow/apply_base" /}
+{extend name="layout/main" /}
 {block name="ext_css"}
 {load href="/static/AdminLTE-2.3.6/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css"}
 {/block}
-{block name="apply_form"}
-	<div class="form-group">
-		<label class="control-label col-sm-2">标题</label>
+{block name="content"}
+	<div class="row">
 		<div class="col-sm-8">
-			<input type="text" name="title" class="form-control" value="{$data['title']}" placeholder="输入标题" readonly/>
+			<div class="box box-solid">
+				<div class="box-header with-border">
+					<i class="fa fa-edit"></i>
+					<h3 class="box-title"> 请假申请</h3>
+				</div>
+				<div class="box-body">
+					<div class="row">
+						<form class="form-horizontal" id="apply_form" role="form">
+							<div class="form-group">
+								<label class="control-label col-sm-2">标题</label>
+								<div class="col-sm-8">
+									<input type="text" name="title" class="form-control" value="{$data['title']}" placeholder="输入标题" readonly/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-sm-2">请假时间*</label>
+								<div class="col-sm-3">
+									<input type="text" class="form-control pull-right date-picker" name="start_time" placeholder="请假开始时间" data-date-format="yyyy-mm-dd hh:ii" value="{$data['start_time']}" {notin name="mode" value="add,edit"}readonly{/notin}>
+								</div>
+								<div class="col-sm-3">
+									<input type="text" class="form-control pull-right date-picker" name="end_time" placeholder="请假结束时间" data-date-format="yyyy-mm-dd hh:ii" value="{$data['end_time']}" {notin name="mode" value="add,edit"}readonly{/notin}>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-sm-2">请假天数*</label>
+								<div class="col-sm-4">
+									<input class="form-control" type="text" name="leave_day" value="{$data['leave_day']}" onchange="update_confirm()" data-toggle="tooltip" data-placement="bottom" title="大于3.5小时为请假1天，小于3.5小时为请假0.5天" {notin name="mode" value="add,edit"}readonly{/notin} placeholder="请假天数(单位0.5天)">
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-sm-2">请假类型*</label>
+								<div class="col-sm-8">
+									<ul class="list-unstyled list-inline radio">
+										{foreach $config['param']['leave_type'] as $type => $name}
+											<li><label><input type="radio" name="leave_type" value="{$type}" {eq name="$type" value="$data['leave_type']"}checked="checked"{/eq}> <span>{$name}</span></label></li>
+										{/foreach}
+									</ul>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-sm-2">请假说明*</label>
+								<div class="col-sm-8">
+									<textarea class="form-control" name="describe" rows="5" {notin name="mode" value="add,edit"}readonly{/notin}>{$data['describe']}</textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="control-label col-sm-2"></label>
+								<div class="col-sm-8">
+									<div id="form_confirm">{$confirm}</div>
+								</div>
+							</div>
+							{if condition="($mode == 'add') OR ($mode == 'edit') "}
+							<div class="form-group">
+								<input type="hidden" name="mode" value="{$mode}">
+								{eq name="mode" value="edit"}
+								<input type="hidden" name="id" value="{$data['id']}">
+								{/eq}
+							</div>
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-8">
+									<a onclick="submit()" class="btn btn-success btn-flat">
+										<i class="fa fa-check"></i>
+										提交
+									</a>
+									<a href="javascript:history.back(-1);" class="btn btn-default btn-flat" style="float:right">
+										<i class="fa fa-arrow-left"></i>
+										返 回
+									</a>
+								</div>
+							</div>
+							{elseif condition="($mode == 'read')"/}
+							<div class="form-group">
+								<div class="col-sm-offset-2 col-sm-8">
+									<a href="javascript:history.back(-1);" class="btn btn-default btn-flat" style="float:right">
+										<i class="fa fa-arrow-left"></i>
+										返 回
+									</a>
+								</div>
+							</div>
+							{/if}
+						</form>
+					</div>
+				</div>
+			</div>
 		</div>
-	</div>
-	<div class="form-group">
-		<label class="control-label col-sm-2">请假时间*</label>
-		<div class="col-sm-3">
-			<input type="text" class="form-control pull-right date-picker" name="start_time" placeholder="请假开始时间" data-date-format="yyyy-mm-dd hh:ii" value="{$data['start_time']}" {notin name="mode" value="add,edit"}readonly{/notin}>
-		</div>
-		<div class="col-sm-3">
-			<input type="text" class="form-control pull-right date-picker" name="end_time" placeholder="请假结束时间" data-date-format="yyyy-mm-dd hh:ii" value="{$data['end_time']}" {notin name="mode" value="add,edit"}readonly{/notin}>
-		</div>
-	</div>
-	<div class="form-group">
-		<label class="control-label col-sm-2">请假天数*</label>
+		{eq name="show.log" value="1"}
 		<div class="col-sm-4">
-			<input class="form-control" type="text" name="leave_day" value="{$data['leave_day']}" onchange="update_confirm()" data-toggle="tooltip" data-placement="bottom" title="大于3.5小时为请假1天，小于3.5小时为请假0.5天" {notin name="mode" value="add,edit"}readonly{/notin} placeholder="请假天数(单位0.5天)">
+			<div class="box box-solid">
+				<div class="box-header with-border">
+					<i class="fa fa-eye"></i>
+					<h3 class="box-title"> 审核日志</h3>
+				</div>
+				<div class="box-body">
+					{foreach $flow_log as $row}
+						<div class="panel {eq name="row.result" value="1"}panel-success{/eq} {eq name="row.result" value="0"}panel-danger{/eq} {eq name="row.result" value="3"}panel-warning{/eq}">
+						  <div class="panel-heading">{$row['user_id']|get_user_name}||{$row['update_time']|date="Y-m-d H:i:s", ###}</div>
+						  <div class="panel-body">
+						    {$row['comment']}
+						  </div>
+						</div>
+					{/foreach}
+				</div>
+			</div>
 		</div>
+		{/eq}
 	</div>
-	<div class="form-group">
-		<label class="control-label col-sm-2">请假类型*</label>
+	{eq name="show.confirm" value="1"}
+	<div class="row">
 		<div class="col-sm-8">
-			<ul class="list-unstyled list-inline radio">
-				{foreach $config['param']['leave_type'] as $type => $name}
-					<li><label><input type="radio" name="leave_type" value="{$type}" {eq name="$type" value="$data['leave_type']"}checked="checked"{/eq}> <span>{$name}</span></label></li>
-				{/foreach}
-			</ul>
+			<div class="box box-solid">
+				<div class="box-header with-border">
+					<i class="fa fa-legal"></i>
+					<h3 class="box-title"> 审核</h3>
+				</div>
+				<div class="box-body">
+					<div class="row">
+							<form class="form-horizontal" id="confirm_form" role="form">
+								<div class="form-group">
+									<label class="control-label col-sm-2">意见*</label>
+									<div class="col-sm-8">
+										<textarea class="form-control" name="comment" rows="5"></textarea>
+									</div>
+								</div>
+								<div class="form-group">
+									<input type="hidden" name="id" value="{$data['id']}">
+									<input type="hidden" name="restep" value="" disabled>
+								</div>
+								<div class="form-group">
+									<div class="col-sm-offset-2 col-sm-8">
+										<a onclick="agree()" class="btn btn-success btn-flat">
+											<i class="fa fa-check"></i>
+											同意
+										</a>
+										<a onclick="reject()" class="btn btn-danger btn-flat">
+											<i class="fa fa-close"></i>
+											拒绝
+										</a>
+										<div class="btn-group">
+										  	<button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										    	<span class="glyphicon glyphicon-repeat"></span> 退回到 <span class="caret"></span>
+										  	</button>
+										  	<ul class="dropdown-menu">
+												{foreach $confirm_list as $step => $conf}
+													{if condition="$step < $data['step']"}
+														<li class="btn_reconfirm"><a href="javascript:;" onclick="reconfirm({$data.step});">流程{$step}: {$conf}</a></li>
+													{/if}
+												{/foreach}
+										  	</ul>
+										</div>
+										<a href="javascript:history.back(-1);" class="btn btn-default btn-flat" style="float:right">
+											<i class="fa fa-arrow-left"></i>
+											返 回
+										</a>
+									</div>
+								</div>
+							</form>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
-	<div class="form-group">
-		<label class="control-label col-sm-2">请假说明*</label>
-		<div class="col-sm-8">
-			<textarea class="form-control" name="describe" rows="5" {notin name="mode" value="add,edit"}readonly{/notin}>{$data['describe']}</textarea>
-		</div>
-	</div>
+	{/eq}
+{/block}
+{block name="ext_js"}
+  {load href="/static/AdminLTE-2.3.6/plugins/bootstrap-datetimepicker/bootstrap-datetimepicker.js"}
+  {load href="/static/AdminLTE-2.3.6/plugins/bootstrap-datetimepicker/locales/bootstrap-datetimepicker.zh-CN.js"}
+  <script>
+  $(function(){
+    $(".date-picker").datetimepicker({
+      language:'zh-CN',
+      format: "yyyy-mm-dd hh:ii",
+      autoclose: true,
+      todayBtn: true,
+      minuteStep: 10
+    });
+  });
+
+  function update_confirm()
+  {
+    var obj_form = $('#apply_form');
+    var leave_day = parseInt(obj_form.find('input[name="leave_day"]').val());
+	leave_day = isNaN(leave_day) ? 0 : leave_day;
+	var data = {leave_day:leave_day};
+    $.get("{:url('/leave/updateConfirm')}", data, function(html){
+      $('#form_confirm').html(html);
+    });
+  }
+  function submit()
+  {
+    sendForm("apply_form","{:url('/leave/save')}", 0, 1);
+  }
+	function agree()
+  {
+    sendForm("confirm_form","{:url('/leave/agree')}", 0, 1);
+  }
+	function reject()
+  {
+    sendForm("confirm_form","{:url('/leave/reject')}", 0, 1);
+  }
+	function reconfirm(restep)
+  {
+	$('#confirm_form').find('input[name="restep"]').val(restep);
+	$('#confirm_form').find('input[name="restep"]').attr("disabled",false);
+    sendForm("confirm_form","{:url('/leave/reconfirm')}", 0, 1);
+	$('#confirm_form').find('input[name="restep"]').attr("disabled",true);
+  }
+  </script>
 {/block}
